@@ -54,9 +54,19 @@ int main(){
                         std::cout << "Mira!, un sprite!!!" << std::endl;
                     
                 }
-                
-                sf::Sprite sprite = create_sprite(texture, mouse);
-                sprites.push_back(sprite);
+                if(!is_sprite){
+                    sf::Sprite sprite = create_sprite(texture, mouse);
+                    sprites.push_back(sprite);
+                }
+            }
+
+            else if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Middle){
+                sf::Vector2f mouse = window.mapPixelToCoords(sf::Mouse::getPosition(window));
+                if (sprites.size() > 0){
+                    if (is_sprite(mouse, sprites)){
+                        ;
+                    }
+                }
             }
 
         window.clear();
