@@ -34,6 +34,8 @@ int main(){
     std::vector<sf::Vertex> lines;
     std::vector<std::vector<sf::Vector2f>> connected_nodes;
     sf::Texture texture;
+    std::vector<sf::Vector2f> mouse_points;
+
     bool sprite_selected = false;
     if (!texture.loadFromFile("Assets/blue-circle.png")){
         std::cout << "Error con textura" << std::endl;
@@ -54,9 +56,7 @@ int main(){
                 if (sprites.size() > 0){
                     if (is_sprite(mouse, sprites)){
                         std::cout << "Mira!, un sprite!!!" << std::endl;
-                        // sf::Vector2f point = window.mapPixelToCoords(sf::Mouse::getPosition(window));
-                        std::vector<sf::Vector2f> mouse_points;
-
+                        
                         if(sprite_selected){
                             mouse_points.push_back(mouse);
                             connected_nodes.push_back(mouse_points);
@@ -65,6 +65,7 @@ int main(){
                             
                             std::cout << "Una linea" << std::endl;
                             sprite_selected = false;
+                            mouse_points.clear();
                             // window.draw(line, 2, sf::Lines);
                         }
                         else if (!sprite_selected){
@@ -78,8 +79,8 @@ int main(){
                         sf::Sprite sprite = create_sprite(texture, mouse);
                         sprites.push_back(sprite);
                     }
-
                 }
+
                 else{
                     sf::Sprite sprite = create_sprite(texture, mouse);
                     sprites.push_back(sprite);
@@ -90,7 +91,7 @@ int main(){
                 sf::Vector2f mouse = window.mapPixelToCoords(sf::Mouse::getPosition(window));
                 if (sprites.size() > 0){
                     if (is_sprite(mouse, sprites)){
-                        ;
+                        break;
                     }
                 }
             }
