@@ -31,8 +31,10 @@ int main(){
     sf::RenderWindow window(sf::VideoMode(500,500), "Grafos");
     std::vector<sf::Sprite> sprites;
     std::vector<sf::FloatRect> sprite_bounds;
+    std::vector<sf::Vertex> lines;
+    std::vector<std::vector<sf::Vector2f>> connected_nodes;
     sf::Texture texture;
-
+    bool sprite_selected = false;
     if (!texture.loadFromFile("Assets/blue-circle.png")){
         std::cout << "Error con textura" << std::endl;
         return 0;
@@ -50,11 +52,35 @@ int main(){
                 sf::Vector2f mouse = window.mapPixelToCoords(sf::Mouse::getPosition(window));
 
                 if (sprites.size() > 0){
-                    if (is_sprite(mouse, sprites))
+                    if (is_sprite(mouse, sprites)){
                         std::cout << "Mira!, un sprite!!!" << std::endl;
-                    
+                        // sf::Vector2f point = window.mapPixelToCoords(sf::Mouse::getPosition(window));
+                        std::vector<sf::Vector2f> mouse_points;
+
+                        if(sprite_selected){
+                            mouse_points.push_back(mouse);
+                            connected_nodes.push_back(mouse_points);
+                            lines.push_back(sf::Vertex(mouse_points[0]));
+                            lines.push_back(sf::Vertex(mouse_points[1]));
+                            
+                            std::cout << "Una linea" << std::endl;
+                            sprite_selected = false;
+                            // window.draw(line, 2, sf::Lines);
+                        }
+                        else if (!sprite_selected){
+                            mouse_points.push_back(mouse);
+                            std::cout << "aqui no hay linea" << std::endl;
+                            connected_nodes.push_back(mouse_points);
+                            sprite_selected = true;
+                        }
+                    }
+                    else {
+                        sf::Sprite sprite = create_sprite(texture, mouse);
+                        sprites.push_back(sprite);
+                    }
+
                 }
-                if(!is_sprite){
+                else{
                     sf::Sprite sprite = create_sprite(texture, mouse);
                     sprites.push_back(sprite);
                 }
@@ -72,8 +98,13 @@ int main(){
         window.clear();
         for (auto &s: sprites)
             window.draw(s);
+        // std::cout << lines.size() << std::endl;
+        if (lines.size() > 0)
+            window.draw(&lines[0],lines.size(), sf::Lines);
+
         window.display();
 
+        }
     }
 
     return 0;
