@@ -35,4 +35,6 @@ g++ sprite_test.o -o sfml-app.o -lsfml-graphics -lsfml-window -lsfml-system
 
 El programa se ve asi:
 
-![Cosas](Images/Funcionamiento.png)
+![Funcionamiento](Images/Funcionamiento.png)
+![Funcionamiento2](Images/Funcionamiento2.png)
+![Funcionamiento3](Images/Funcionamiento3.png)
