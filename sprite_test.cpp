@@ -32,27 +32,33 @@ int get_sprite_index(const sf::Vector2f &mouse, const std::vector<sf::Sprite> &s
     return -1;
 }
 
-void  move_sprite(sf::Vector2f &mouse, sf::Sprite &sprite){
-    sprite.setPosition(mouse);
-}
+// void update_lines(const std::vector<sf::Sprite> &sprites, const std::vector<std::vector<int>> &connected_nodes_index, std::vector<sf::Vertex> &lines, const int &global_sprite_index){
+
+// }
 
 int main(){
 
     sf::RenderWindow window(sf::VideoMode(500,500), "Grafos");
+
     std::vector<sf::Sprite> sprites;
-    std::vector<sf::FloatRect> sprite_bounds;
     std::vector<sf::Vertex> lines;
     std::vector<std::vector<sf::Vector2f>> connected_lines;
     std::vector<std::vector<int>> connected_nodes_index;
-    sf::Texture texture;
+    std::vector<int> node_index;
     std::vector<sf::Vector2f> mouse_points;
-    sf::Sprite current_sprite;
-    int global_sprite_index;
-    std::string mouse_button;
 
+    std::vector<int> modified_lines_index;
+
+    sf::Texture texture;
+    sf::Sprite current_sprite;
+ 
+    int global_sprite_index;
+ 
+    std::string mouse_button;
 
     bool sprite_selected = false;
     bool button_pressed = false;
+
     if (!texture.loadFromFile("Assets/blue-circle.png")){
         std::cout << "Error con textura" << std::endl;
         return 0;
@@ -73,25 +79,25 @@ int main(){
                     if (is_sprite(mouse, sprites)){
                         int index = get_sprite_index(mouse, sprites);
                         std::cout << "Mira!, el sprite " << index << "!!!" << std::endl;
-                        std::vector<int> sprite_index;
                         if(sprite_selected){
-                              
                             mouse_points.push_back(mouse);
                             connected_lines.push_back(mouse_points);
-                            sprite_index.push_back(index);
+                            node_index.push_back(index);
+                            connected_nodes_index.push_back(node_index);
                             lines.push_back(sf::Vertex(mouse_points[0]));
                             lines.push_back(sf::Vertex(mouse_points[1]));
                             
                             std::cout << "Una linea" << std::endl;
                             sprite_selected = false;
                             mouse_points.clear();
+                            node_index.clear();
                             // window.draw(line, 2, sf::Lines);
                         }
                         else if (!sprite_selected){
                             mouse_points.push_back(mouse);
                             std::cout << "aqui no hay linea" << std::endl;
                             connected_lines.push_back(mouse_points);
-                            sprite_index.push_back(index);
+                            node_index.push_back(index);
                             sprite_selected = true;
                         }
                     }
@@ -107,10 +113,6 @@ int main(){
                 }
             }
 
-            // else if (event.type != sf::Event::MouseButtonReleased && event.mouseButton.button == sf::Mouse::Left && event.type == sf::Event::MouseMoved){
-            //     std::cout << "no he soltado el click" << event.mouseButton.x << ' ' << event.mouseButton.y << std::endl;
-            // }
-
             else if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Middle){
                 
                 sf::Vector2f mouse = window.mapPixelToCoords(sf::Mouse::getPosition(window));
@@ -122,7 +124,20 @@ int main(){
                         std::cout << "el sprite que buscas es el " << global_sprite_index << std::endl;
 
                         mouse_button = "Middle";
+                        if (lines.size() > 0){
+                            for (int i = 0; i < lines.size(); ++i){
+                                if (sprites[global_sprite_index].getGlobalBounds().contains(lines[i].position))
+                                    modified_lines_index.push_back(i);
+
+                            }
+                        }
+
                         sprites[global_sprite_index].setPosition(mouse);
+                        if(modified_lines_index.size() > 0){
+                            for (int i = 0; i < modified_lines_index.size(); ++i)
+                                lines[modified_lines_index[i]].position = sprites[global_sprite_index].getPosition();
+                        }
+                        
                         sprite_selected = true;
                     }
                     else{
@@ -135,21 +150,37 @@ int main(){
             }
             else if (event.type == sf::Event::MouseMoved && mouse_button == "Middle"){
                 if (sprite_selected){
+                    if (lines.size() > 0){
+                        for (int i = 0; i < lines.size(); ++i){
+                            if (sprites[global_sprite_index].getGlobalBounds().contains(lines[i].position))
+                                modified_lines_index.push_back(i);
+
+                        }
+                    
+                    }
                     sprites[global_sprite_index].setPosition(window.mapPixelToCoords(sf::Mouse::getPosition(window)));
+
+                    if(modified_lines_index.size() > 0){
+                        for (int i = 0; i < modified_lines_index.size(); ++i)
+                            lines[modified_lines_index[i]].position = sprites[global_sprite_index].getPosition();
+                    }
                 }
             }
             else if (event.type == sf::Event::MouseButtonReleased && mouse_button == "Middle"){
                 mouse_button = "";
                 sprite_selected = false;
                 global_sprite_index = -1;
+                if(modified_lines_index.size() > 0)
+                    modified_lines_index.clear();
             }
                 
             
 
         window.clear();
-        for (auto &s: sprites)
+        for (auto &s: sprites){
             window.draw(s);
-        // std::cout << lines.size() << std::endl;
+            // std::cout<< s.getPosition().x << " " << s.getPosition().y << std::endl;
+        }
         if (lines.size() > 0)
             window.draw(&lines[0],lines.size(), sf::Lines);
 
