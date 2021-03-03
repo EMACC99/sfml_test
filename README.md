@@ -30,6 +30,11 @@ g++ sprite_test.o -o sfml-app.o -lsfml-graphics -lsfml-window -lsfml-system
 ./sfml-app.o
 ```
 
+## Funcionalidades
+El programa tiene por ahora, tres funcionalidades basicas:
+* Añadir un nodo  -> dando click
+* Unir dos nodos -> dando click a dos nodos
+* Mover los nodos -> presionando la rueda del mouse sobre el nodo y mover el mouse sin soltarlo
 
 ## Programa
 
