@@ -18,6 +18,15 @@ sudo apt install libsfml-dev
 
 ### Compilacion
 
+Para compilar el programa, se puede correr el `makefile` incluido, para eso, solo hay que poner en una terminal
+
+```
+makefile
+```
+Y automaticamente generara el binario
+
+### A Mano:
+Si no se desea usar el makefile, se puede hacer de la siguente manera
 ```
 g++ -c sprite_test.cpp
 
@@ -25,7 +34,7 @@ g++ sprite_test.o -o sfml-app.o -lsfml-graphics -lsfml-window -lsfml-system
 ```
 
 ### Ejecucion
-
+Para ejecutar el programa, hay que poner en una terminal el siguente comando:
 ```
 ./sfml-app.o
 ```
