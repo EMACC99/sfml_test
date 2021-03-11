@@ -21,7 +21,7 @@ sudo apt install libsfml-dev
 Para compilar el programa, se puede correr el `makefile` incluido, para eso, solo hay que poner en una terminal
 
 ```
-makefile
+make
 ```
 Y automaticamente generara el binario
 
